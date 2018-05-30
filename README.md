@@ -1,0 +1,2 @@
+# LR-exercise
+Class exercises
