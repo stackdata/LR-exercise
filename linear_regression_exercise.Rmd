@@ -1,0 +1,116 @@
+---
+title: "Linear Regression Mini Project"
+author: "Anthony Stachowitz"
+date: "May 30, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Linear Regression Mini Project
+# Exercise 1: least squares regression
+
+   Use the /states.rds/ data set. Fit a model predicting energy consumed
+   per capita (energy) from the percentage of residents living in
+   metropolitan areas (metro). Be sure to
+   
+   1. Examine/plot the data before fitting the model
+   2. Print and interpret the model `summary'
+   3. `plot' the model to look for deviations from modeling assumptions
+   
+   Select one or more additional predictors to add to your model and
+   repeat steps 1-3. Is this model significantly better than the model
+   with /metro/ as the only predictor?
+
+### Examine/plot the data before fitting the model
+
+```{r}
+states.data <- readRDS("dataSets/states.rds")
+states.info <- data.frame(attributes(states.data)[c("names", "var.labels")])
+tail(states.info, 8)
+sts.eng.mtr <- subset(states.data, select = c("energy", "metro"))
+summary(sts.eng.mtr)
+plot(sts.eng.mtr)
+```
+
+### Print and interpret the model `summary'
+
+```{r}
+sat.eng.mod <- lm(energy ~ metro,
+              data=states.data)
+summary(sat.eng.mod) 
+```
+**The R-squared is low at 0.1154. this does not look to be a very good regregression model with this data alone. There also seems to be some data points that skew the data a bit**
+
+### `plot' the model to look for deviations from modeling assumptions
+
+```{r}
+hist(residuals(sat.eng.mod))
+plot(sat.eng.mod)
+```
+
+
+
+
+
+## With additional predictors
+
+### Examine/plot the data before fitting the model
+
+```{r}
+sts.eng.hse <- subset(states.data, select = c("energy", "house"))
+sts.eng.snt <- subset(states.data, select = c("energy", "senate"))
+sts.eng.total <- subset(states.data, select = c("energy", "metro", "house", "senate"))
+summary(sts.eng.total)
+plot(sts.eng.mtr)
+plot(sts.eng.hse)
+plot(sts.eng.snt)
+```
+
+### Print and interpret the model `summary'
+
+```{r}
+sat.eng.mod2 <- lm(energy ~ metro + house + senate,
+              data=states.data)
+summary(sat.eng.mod2) 
+```
+**The R-squared is 0.4356. this is a little bit better but we should probably continue to work on it. There still seems to be some data points that skew the data**
+
+### `plot' the model to look for deviations from modeling assumptions
+
+```{r}
+hist(residuals(sat.eng.mod2))
+plot(sat.eng.mod2)
+```
+
+# Exercise 2: Interactions and factors
+
+   Use the states data set.
+
+   1. Add on to the regression equation that you created in exercise 1 by
+      generating an interaction term and testing the interaction.
+
+   2. Try adding region to the model. Are there significant differences
+      across the four regions?
+      
+### Add on to the regression equation that you created in exercise 1 by generating an interaction term and testing the interaction.
+
+```{r}
+sat.eng.mod2a <- lm(energy ~ metro + house*senate,
+              data=states.data)
+summary(sat.eng.mod2a)
+```
+**The regression equation did improve to 0.5567 by making the house and energy dependant on the senate**
+
+### Add region to the model. Are there differences across the four regions?
+
+```{r}
+str(states.data$region)
+states.data$region <- factor(states.data$region)
+sat.eng.mod2b <- lm(energy ~ metro + region + house*senate,
+              data=states.data)
+summary(sat.eng.mod2b)
+```
+**There does not seem to be significant diferences with region added**
