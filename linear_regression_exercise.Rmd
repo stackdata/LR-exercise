@@ -113,4 +113,4 @@ sat.eng.mod2b <- lm(energy ~ metro + region + house*senate,
               data=states.data)
 summary(sat.eng.mod2b)
 ```
-**There does not seem to be significant diferences with region added**
+**There does not seem to be significant diferences with region added.**
