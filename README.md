@@ -1,2 +1,2 @@
 # LR-exercise
-Class exercises
+Class exercises for linear regression
